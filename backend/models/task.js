@@ -5,9 +5,7 @@ const { Schema } = mongoose;
 const taskSchema = new Schema({
     taskName: {type: Schema.Types.String, minLength: 2},
     isDone: {type: Boolean, default: false},
-    category: {type: Schema.Types.ObjectId, ref: 'category', default: null},
-    priority: {type: Schema.Types.ObjectId, ref: 'priority', default: null},
-    expireDate: {type: Schema.Types.Date},
+    project: {type: Schema.Types.ObjectId, ref: 'project', default: null},
     user: {type: Schema.Types.ObjectId}
 });
 
