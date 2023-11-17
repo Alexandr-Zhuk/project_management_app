@@ -1,36 +1,31 @@
 const taskModel = require('../models/task');
 
 
-const addTask = async(data) => {
+const addTask = async(data, id) => {
+    data.project = id;
+    console.log(data);
     await taskModel.create(data);
 };
 
-const getAllTasks = async(filter) => {
-    filter.isDone = false;
-    console.log(filter)
-    return await taskModel.find(filter).populate('category').populate('priority');
+const getAllTasks = async(id) => {
+    return await taskModel.find({project: id, isDone: false});
 };
 
-const updateTask = async(data) => {
-    const id = data.id;
-    delete data.id;
-    await taskModel.findByIdAndUpdate(id, data);
+const makeTaskDone = async(id) => {
+    const data = {isDone: true};
+    await taskModel.findByIdAndUpdate(id, data)
+}
+
+const updateTask = async(data, id) => {
+    return await taskModel.findByIdAndUpdate(id, data);
 };
 
 const deleteTask = async(id) => {
-    console.log(id);
     await taskModel.findByIdAndDelete(id);
-};
-
-const getByDate = () => {
-
-};
-
-const getByCategory = () => {
-
 };
 
 module.exports.addTask = addTask;
 module.exports.getAllTasks = getAllTasks;
 module.exports.updateTask = updateTask;
 module.exports.deleteTask = deleteTask;
+module.exports.makeTaskDone = makeTaskDone;

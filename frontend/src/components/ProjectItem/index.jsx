@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {setProjects} from '../../actions/projects';
 import ModalWindow from "../ModalWindow";
 import { useState } from 'react' 
+import { NavLink } from "react-router-dom";
+
 
 function ProjectItem(props){
     const [forUpdateProject, setForUpdateProject] = useState([]);
@@ -42,10 +44,17 @@ function ProjectItem(props){
     return(
         <li 
             key={props.project._id} 
-            className="flex justify-between items-center border-2 border-indigo-600 rounded-2xl px-4 py-2 mb-2"
+            className="flex justify-between flex-wrap md:flex-nowrap items-center border-2 border-indigo-600 rounded-2xl px-4 py-2 mb-4"
         >
-            {props.project.projectName}
-            <div>
+            <div className="w-full mb-3 md:mb-0 text-center md:text-left">
+                <NavLink 
+                    to={'/project/' + props.project._id}
+                    className="text-lg font-semibold text-indigo-600 hover:text-indigo-400"
+                >
+                    {props.project.projectName}
+                </NavLink>
+            </div>
+            <div className="min-w-max flex justify-center w-full md:w-max">
                 <button type="button" className="ml-3 border border-indigo-600 rounded-xl px-2 py-1 hover:bg-indigo-500 hover:text-white" onClick={()=> changeProjectModal(props.project._id)}>Изменить</button>
                 <button type="button" className="ml-3 border border-indigo-600 rounded-xl px-2 py-1 hover:bg-indigo-500 hover:text-white" onClick={()=> deleteProject(props.project._id)}>Удалить</button>
             </div>

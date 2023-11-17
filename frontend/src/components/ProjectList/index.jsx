@@ -29,7 +29,7 @@ function ProjectList(){
             {projectList.length > 0
                 ? 
                 
-                <ul className="w-9/12 mx-auto mt-5">
+                <ul className="w-full lg:w-9/12 mx-auto mt-5">
                     {projectList.map((item) => <ProjectItem project={item}/>)}
                 </ul>
                 : 
