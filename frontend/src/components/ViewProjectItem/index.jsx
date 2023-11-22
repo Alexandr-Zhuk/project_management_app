@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ModalWindow from '../ModalWindow';
+import { useSelector, useDispatch } from "react-redux";
+import { setAccessToken } from '../../actions/auth';
 
 import TaskItem from '../TaskItem';
 
@@ -11,34 +13,73 @@ function ViewProjectItem(){
     const [isLoading, setIsLoading] = useState(false); 
     const [responce, setResponce] = useState(''); 
     const [tasks, setTasks] = useState([]);
-    
+   
+    const accessToken = useSelector((state)=> state.auth.accessToken);
+    const dispatch = useDispatch();
 
-    const getProject = async()=>{
+    const getProjectId = () => {
         const pathArr = window.location.pathname.split('/');
         const id = pathArr[pathArr.length-1];
+        return id;
+    };
+
+    const getProject = async()=>{
+        const id = getProjectId();
         const result = await axios.get('/projects/view/' + id);
         setCurrentProject(result.data);
-        getTasks(result.data._id);
-        
     }
 
     const addTask = async(ev) => {
         ev.preventDefault();
         const formData = new FormData(ev.target)
-        const result = await axios.post('/tasks/add/' + currentProject._id, formData);
+        setIsLoading(true);
+        const result = await axios.post('/tasks/add/' + currentProject._id, formData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                Accept: 'application/json'
+            }
+        });
         setTasks(result.data);
+        setResponce('Задача успешно добавлена');
+        setIsLoading(false);
+        setTimeout(closeModal, 2000);
     };
 
-    const getTasks = async(id) => {
-        const result = await axios.get('/tasks/list/' + id);
+    const getRefresh = async() => {
+        if(accessToken){
+            const accTok = await axios.get('/auth/refreshtoken');
+            if(accTok.data.accessToken){
+                setAccessToken(accTok.data.accessToken, dispatch);
+                return;
+            }
+            setAccessToken('', dispatch);
+        }
+    }
+
+    const getTasks = async() => {
+        const id = getProjectId();
+        const result = await axios.get('/tasks/list/' + id, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                Accept: 'application/json'
+            }
+        });
+        if(result.data.status === 401){
+            getRefresh();
+        }
         setTasks(result.data);
     }
 
+    const closeModal = ()=>{
+        setModalActive(false);
+        setResponce('');
+    }
     
-
     useEffect(()=>{
         getProject();
-    }, [])
+        getTasks();
+        
+    }, [accessToken])
 
     return(
         <div>
@@ -53,7 +94,7 @@ function ViewProjectItem(){
                     {tasks.length > 0
                         ?
                         <ul> 
-                            {tasks.map((item) => <TaskItem task={item} setTask={setTasks}/>)}
+                            {tasks.map((item) => <TaskItem task={item} setTask={setTasks} getTasks={getTasks} />)}
                         </ul>
                         :
                         <div>Нет задач</div>

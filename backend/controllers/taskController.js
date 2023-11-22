@@ -3,7 +3,6 @@ const taskModel = require('../models/task');
 
 const addTask = async(data, id) => {
     data.project = id;
-    console.log(data);
     await taskModel.create(data);
 };
 
@@ -21,7 +20,7 @@ const updateTask = async(data, id) => {
 };
 
 const deleteTask = async(id) => {
-    await taskModel.findByIdAndDelete(id);
+    return await taskModel.findByIdAndDelete(id);
 };
 
 module.exports.addTask = addTask;

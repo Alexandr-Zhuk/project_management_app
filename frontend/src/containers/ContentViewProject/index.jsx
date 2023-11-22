@@ -26,7 +26,6 @@ function ContentViewProject(){
         }
         setProjects(res.data, dispatch)
         setIsLoading(false);
-        console.log(res);
         setTimeout(closeModal, 2000);
     };
 

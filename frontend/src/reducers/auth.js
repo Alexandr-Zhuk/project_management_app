@@ -2,13 +2,11 @@
 import update from 'react-addons-update';
 
 import {
-    SET_ACCESS_TOKEN,
-    SET_GOOGLE_ACCESS_TOKEN
+    SET_ACCESS_TOKEN
 } from './types';
 
 export const initialState = {
-    accessToken: '',
-    googleAccessToken: ''
+    accessToken: ''
 };
 
 const reducer = (state = initialState, action) => {
@@ -16,11 +14,6 @@ const reducer = (state = initialState, action) => {
         case SET_ACCESS_TOKEN:
             return update(state, {
                 accessToken: {$set: action.payload.accessToken},
-            });
-        break;
-        case SET_GOOGLE_ACCESS_TOKEN:
-            return update(state, {
-                googleAccessToken: {$set: action.payload.googleAccessToken},
             });
         break;
     }

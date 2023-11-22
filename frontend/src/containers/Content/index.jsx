@@ -27,7 +27,6 @@ function Content(){
         }
         setProjects(res.data, dispatch)
         setIsLoading(false);
-        console.log(res);
         setTimeout(closeModal, 2000);
     };
 
@@ -35,7 +34,6 @@ function Content(){
         const sort = ev.target.value;
         
         const listProjects = [...projectList];
-        console.log(listProjects)
         let res = [];
         if(sort === 'alphabet'){
             res = listProjects.sort((a, b) => a.projectName.toLowerCase() > b.projectName.toLowerCase() ? 1 : -1);

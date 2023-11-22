@@ -1,33 +1,35 @@
 import axios from "axios";
 import { useState } from "react";
 import ModalWindow from "../ModalWindow";
+import { useSelector } from "react-redux"; 
 
-function TaskItem({ task, setTask }){
+function TaskItem({ task, setTask, getTasks }){
 
     const [modalActive, setModalActive] = useState(false); 
     const [isLoading, setIsLoading] = useState(false); 
     const [responce, setResponce] = useState(''); 
     const [tasks, setTasks] = useState([]);
     const [taskForUpdate, setTaskForUpdate] = useState('');
+    const accessToken = useSelector((state)=> state.auth.accessToken)
 
     const makeTaskDone = async(id) => {
-        await axios.get('/tasks/change/done/' + id);
+        await axios.get('/tasks/change/done/' + id, { headers: {"Authorization" : `Bearer ${accessToken}`} });
         let remakeTasks = [...tasks];
         remakeTasks = remakeTasks.filter((item) => item._id !== id);
         setTasks(remakeTasks);
+        getTasks();
     }
 
     const deleteTask = async(id) => {
-        const result = await axios.get('/tasks/delete/' + id);
-        console.log(result);
+        await axios.get('/tasks/delete/' + id, { headers: {"Authorization" : `Bearer ${accessToken}`} });
         let remakeTasks = [...tasks];
         remakeTasks = remakeTasks.filter((item) => item._id !== id);
         setTasks(remakeTasks);
+        getTasks();
     }
 
     const isCheckedTask = (ev) => {
         if(ev.target.checked){
-            console.log(ev.target.value)
             ev.target.disabled = true;
             setTimeout(() => makeTaskDone(ev.target.value), 2000);
         }
@@ -40,18 +42,15 @@ function TaskItem({ task, setTask }){
 
     const changeTask = async(ev, id) => {
         ev.preventDefault();
-        console.log(id);
         const formData = new FormData(ev.target);
         setIsLoading(true);
-        const result = await axios.post('/tasks/change/' + id, formData);
+        const result = await axios.post('/tasks/change/' + id, formData, { headers: {"Authorization" : `Bearer ${accessToken}`} });
         setTask(result.data);
         setTaskForUpdate('')
         setResponce('Задача успешно изменена');
         setIsLoading(false);
-        setTimeout(closeModal, 2000);
-        
+        setTimeout(closeModal, 2000);  
     }
-
 
     const changeTaskModal = (task) => {
         setModalActive(true);
@@ -103,7 +102,6 @@ function TaskItem({ task, setTask }){
                             <div className='pt-3 text-center text-lg text-indigo-600'>{responce}</div>
                         </div> 
                     }
-                    
             </ModalWindow>
         </li>
         

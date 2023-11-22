@@ -18,11 +18,8 @@ router.get('/list', async(req, res) => {
 
 // /projects/list/search/:project
 router.get('/list/search/:query', async(req, res) => {
-    console.log('Мы пришли')
     const query = req.params.query;
-    console.log(query)
     const projectList = await projectController.getProjectsBySearch(query);
-    console.log(projectList);
     res.json(projectList);
 });
 
@@ -30,7 +27,6 @@ router.get('/list/search/:query', async(req, res) => {
 router.post('/change/:id', upload.none(), async(req, res) => {
     const id = req.params.id;
     const data = req.body;
-    console.log(data);
     await projectController.updateProject(data, id);
     const projectList = await projectController.getAllProjects();
     res.json(projectList);
@@ -39,9 +35,7 @@ router.post('/change/:id', upload.none(), async(req, res) => {
 // /projects/delete
 router.get('/delete/:id', async(req, res) => {
     const id = req.params.id;
-    console.log(id);
     const result = await projectController.deleteProject(id);
-    console.log(result)
     const projectList = await projectController.getAllProjects();
     res.json(projectList);
 });
@@ -49,8 +43,6 @@ router.get('/delete/:id', async(req, res) => {
 // /projects/add
 router.post('/add', upload.none(), async(req, res) => {
     const newProject = req.body;
-    console.log(newProject);
-
     await projectController.addProject(newProject);
     const projectList = await projectController.getAllProjects();
     res.json(projectList);

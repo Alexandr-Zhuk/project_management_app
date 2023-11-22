@@ -5,12 +5,10 @@ const getAllProjects = async() => {
 };
 
 const getProjectsBySearch = async(query) => {
-    //console.log(query)
     const search = {projectName: new RegExp(query, 'i')};
     if(!query){
         search = {};
     }
-    console.log(search)
     return await projectModel.find(search);
 };
 

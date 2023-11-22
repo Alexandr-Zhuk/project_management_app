@@ -10,35 +10,42 @@ function ProjectItem(props){
     const [forUpdateProject, setForUpdateProject] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
     const [modalActive, setModalActive] = useState(false);
+    const [responce, setResponce] = useState('');
 
     const dispatch = useDispatch();
     const project = useSelector((state) => state.projects.projects);
+
+    // Deleting project
     const deleteProject = async(id) => {
-        
         const result = await axios.get('/projects/delete/'+id);
         setProjects(result.data, dispatch);
     };
 
+    // function for close the modal window
+    const closeModal = () => {
+        setModalActive(false);
+        setResponce('');
+    };
+
+    // Changing project
     const changeProject = async(ev, id) => {
         ev.preventDefault();
         setIsLoading(true);
         const formData = new FormData(ev.target); 
         const res = await axios.post('/projects/change/' + id, formData);
         if(res.data){
-            //setResponce('Проект добавлен');
+            setResponce('Проект изменен');
         }
         setProjects(res.data, dispatch)
         setIsLoading(false);
-        console.log(res);
-        //setTimeout(closeModal, 2000); 
+        setTimeout(closeModal, 2000); 
     };
 
+    // Get project id from query string and open modal window
     const changeProjectModal = (id) => {
         const onlyOne = project.filter((item) => item._id === id);
         setForUpdateProject(onlyOne[0]);
         setModalActive(true);
-        //const result = await axios.get('/projects/change/'+id);
-        //setProjects(result.data, dispatch);
     };
 
     return(
@@ -84,7 +91,7 @@ function ProjectItem(props){
 
                             </textarea>
                     <br /><button className='py-2 px-4 border-2 border-indigo-600 rounded-3xl text-indigo-600 ml-2 font-bold hover:bg-indigo-500 hover:text-white' type="submit">Изменить проект</button>
-                    <div></div>
+                    <div>{responce}</div>
                 </form>
                 }
             </ModalWindow>
